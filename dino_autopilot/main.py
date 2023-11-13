@@ -24,10 +24,16 @@ def binary_frame():
 
 	return bin
 
+# Baseline detect
+baseline = binary_frame().sum(1).argmax()
+roi = slice(baseline - 110, baseline - 10)
+
 while True:
 	frame = binary_frame()
+	game = frame[roi]
 
-	if np.any(frame.sum(0)[1160:1260] > 10):
+	# 1134 is the last pixel of the dino
+	if np.any(game.sum(0)[1160:1260]):
 		pyautogui.press("space")
 
 	sleep(.1)
