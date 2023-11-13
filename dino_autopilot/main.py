@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from mss import mss
 import numpy as np
 import pyautogui
-from time import sleep
+from time import sleep, perf_counter
 
 sct = mss()
 
@@ -29,6 +29,7 @@ baseline = binary_frame().sum(1).argmax()
 roi = slice(baseline - 110, baseline - 10)
 
 while True:
+	start = perf_counter()
 	frame = binary_frame()
 	game = frame[roi]
 
@@ -36,4 +37,6 @@ while True:
 	if np.any(game.sum(0)[1160:1260]):
 		pyautogui.press("space")
 
-	sleep(.1)
+	elapsed = perf_counter() - start
+	print(f"{elapsed*1000:.1f}ms processing")
+	sleep(.05)
