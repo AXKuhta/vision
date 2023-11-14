@@ -4,6 +4,9 @@ import numpy as np
 import pyautogui
 from time import sleep, perf_counter
 
+# ОСТОРОЖНО
+pyautogui.PAUSE = 0
+
 sct = mss()
 
 def visual_debug(image):
@@ -67,7 +70,7 @@ while True:
 	r_pts, c_pts = np.where(dino)
 	dino_r, dino_c = r_pts.mean(), c_pts.mean()
 
-	dino_airborne = dino_r < roi["height"] * 0.8
+	dino_airborne = dino_r < roi["height"] * 0.7
 
 	if not dino_airborne:
 		obstacles = game.sum(0)[dino_ends:dino_ends+danger_zone]
@@ -77,4 +80,4 @@ while True:
 
 	elapsed = perf_counter() - start
 	print(f"{elapsed*1000:.1f}ms processing")
-	sleep(.05)
+	sleep(1/20) # 20 Hz
