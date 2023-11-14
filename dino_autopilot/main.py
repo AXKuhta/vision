@@ -76,7 +76,9 @@ while True:
 		obstacles = game.sum(0)[dino_ends:dino_ends+danger_zone]
 
 		if np.any(obstacles > 10):
-			pyautogui.press("space")
+			pyautogui.keyDown("space")
+			sleep(1/50) # 50 Hz
+			pyautogui.keyUp("space")
 
 	elapsed = perf_counter() - start
 	print(f"{elapsed*1000:.1f}ms processing")
