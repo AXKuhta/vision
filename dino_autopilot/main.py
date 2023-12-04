@@ -64,9 +64,10 @@ dino_ends = round(roi["width"] / 8)
 # Предположим, что все наземные препятствия можно увидеть по линии, расположенной на 7/8 высоты экрана
 obstacle_level = round(roi["height"] * 7/8)
 
-danger_zone = round(dino_ends*1.25)
+# Воздушные препятствия: 5/8
+aerial_level = round(roi["height"] * 5/8)
 
-np.set_printoptions(linewidth=120)
+danger_zone = round(dino_ends*1.25)
 
 while True:
 	start = perf_counter()
@@ -78,13 +79,18 @@ while True:
 
 	dino_airborne = dino_r < roi["height"] * 0.7
 
-	obstacles = game[obstacle_level, dino_ends:dino_ends+danger_zone]
+	ground_obstacles = game[obstacle_level, dino_ends:dino_ends+danger_zone]
+	aerial_obstacles = game[aerial_level, dino_ends:dino_ends+danger_zone]
 
 	if not dino_airborne:
-		if np.any(obstacles):
+		if np.any(ground_obstacles):
 			pyautogui.keyDown("space")
 			sleep(1/50) # 50 Hz
 			pyautogui.keyUp("space")
+		elif np.any(aerial_obstacles):
+			pyautogui.keyDown("down")
+			sleep(.5)
+			pyautogui.keyUp("down")
 
 	elapsed = perf_counter() - start
 	#print(f"{elapsed*1000:.1f}ms processing")
