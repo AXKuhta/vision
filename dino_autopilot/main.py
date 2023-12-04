@@ -64,8 +64,8 @@ dino_ends = round(roi["width"] / 8)
 # Предположим, что все наземные препятствия можно увидеть по линии, расположенной на 7/8 высоты экрана
 obstacle_level = round(roi["height"] * 7/8)
 
-# Воздушные препятствия: 5/8
-aerial_level = round(roi["height"] * 5/8)
+# Воздушные препятствия: 6/8
+aerial_level = round(roi["height"] * 6/8)
 
 danger_zone = round(dino_ends*1.25)
 
@@ -92,6 +92,11 @@ while True:
 			sleep(.5)
 			pyautogui.keyUp("down")
 
+	else:
+		if not np.any(ground_obstacles):
+			pyautogui.keyDown("down")
+			sleep(.2)
+			pyautogui.keyUp("down")
 	elapsed = perf_counter() - start
 	#print(f"{elapsed*1000:.1f}ms processing")
 	sleep(1/20) # 20 Hz
