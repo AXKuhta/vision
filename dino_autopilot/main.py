@@ -58,9 +58,15 @@ def roi_detect():
 
 roi = roi_detect()
 
-# Предположим, что динозавр всегда в первой 1/6 экрана
-dino_ends = round(roi["width"] / 6)
-danger_zone = 50
+# Предположим, что динозавр всегда в первой 1/8 экрана
+dino_ends = round(roi["width"] / 8)
+
+# Предположим, что все наземные препятствия можно увидеть по линии, расположенной на 7/8 высоты экрана
+obstacle_level = round(roi["height"] * 7/8)
+
+danger_zone = round(dino_ends*1.25)
+
+np.set_printoptions(linewidth=120)
 
 while True:
 	start = perf_counter()
@@ -72,14 +78,14 @@ while True:
 
 	dino_airborne = dino_r < roi["height"] * 0.7
 
-	if not dino_airborne:
-		obstacles = game.sum(0)[dino_ends:dino_ends+danger_zone]
+	obstacles = game[obstacle_level, dino_ends:dino_ends+danger_zone]
 
-		if np.any(obstacles > 10):
+	if not dino_airborne:
+		if np.any(obstacles):
 			pyautogui.keyDown("space")
 			sleep(1/50) # 50 Hz
 			pyautogui.keyUp("space")
 
 	elapsed = perf_counter() - start
-	print(f"{elapsed*1000:.1f}ms processing")
+	#print(f"{elapsed*1000:.1f}ms processing")
 	sleep(1/20) # 20 Hz
