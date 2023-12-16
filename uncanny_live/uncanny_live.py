@@ -16,34 +16,12 @@ cv2.namedWindow("BINARY", cv2.WINDOW_KEEPRATIO)
 # Определение круглости
 # ###########################################################################################
 
-def centroid(boundary_pts):
-	moments = cv2.moments(boundary_pts)
-	return int(moments["m10"] / moments["m00"]), int(moments["m01"] / moments["m00"])
+# Mean Radial Distance / Stddev Radial Distance
+def roundness_v3(boundary_pts):
+	relative_pts = boundary_pts - boundary_pts.mean(0)
+	rd = np.linalg.norm(relative_pts, axis=1)
 
-# Mean Radial Distance
-def mrd(boundary_pts):
-	r_ct, c_ct = centroid(boundary_pts)
-	acc = 0.0
-
-	for r_pt, c_pt in boundary_pts:
-		acc += hypot(r_pt - r_ct, c_pt - c_ct)
-
-	return acc / len(pts)
-
-# Stddev Radial Distance
-def stdrd(boundary_pts):
-	r_ct, c_ct = centroid(boundary_pts)
-	acc = 0.0
-
-	rd = mrd(boundary_pts)
-
-	for r_pt, c_pt in boundary_pts:
-		acc += (hypot(r_pt - r_ct, c_pt - c_ct) - rd) ** 2
-
-	return (acc / len(pts)) ** 0.5
-
-def roundness_v2(boundary_pts):
-	return mrd(boundary_pts) / stdrd(boundary_pts)
+	return rd.mean() / rd.std()
 
 # ###########################################################################################
 # Главный цикл
@@ -99,7 +77,7 @@ while True:
 			if parent != -1:
 				continue
 
-			roundness = roundness_v2(pts)
+			roundness = roundness_v3(pts)
 
 			if roundness > 20:
 				color = (0,255,0)
