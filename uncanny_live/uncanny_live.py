@@ -16,12 +16,12 @@ cv2.namedWindow("BINARY", cv2.WINDOW_KEEPRATIO)
 # Определение круглости
 # ###########################################################################################
 
-# Mean Radial Distance / Stddev Radial Distance
+# Stddev Radial Distance / Mean Radial Distance
 def roundness_v3(boundary_pts):
 	relative_pts = boundary_pts - boundary_pts.mean(0)
 	rd = np.linalg.norm(relative_pts, axis=1)
 
-	return rd.mean() / rd.std()
+	return rd.std() / rd.mean()
 
 # ###########################################################################################
 # Главный цикл
@@ -79,7 +79,7 @@ while True:
 
 			roundness = roundness_v3(pts)
 
-			if roundness > 20:
+			if roundness < 0.05:
 				color = (0,255,0)
 				balls += 1
 			else:
